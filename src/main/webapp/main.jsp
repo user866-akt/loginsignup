@@ -11,10 +11,14 @@
         response.sendRedirect("login.html");
         return;
     }
+
+    String sessionId = session.getId();
 %>
 
 <h1>Welcome, <%= user %>!</h1>
 <p>Login successful</p>
+<p><strong>Session ID:</strong> <%= sessionId %></p>
+
 
 </body>
 </html>
