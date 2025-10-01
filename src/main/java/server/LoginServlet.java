@@ -3,29 +3,26 @@ package server;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.*;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 @WebServlet(name = "Login", urlPatterns = "/login")
 public class LoginServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        resp.sendRedirect("login.html");
+        FreeMarkerUtil.render(resp, "login.ftl", new HashMap<>());
     }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         String login = req.getParameter("login");
         String password = req.getParameter("password");
+
         if (SignUpServlet.checkUser(login, password)) {
-            HttpSession httpSession = req.getSession();
-            httpSession.setAttribute("user", login);
-            httpSession.setMaxInactiveInterval(60 * 60);
-
-            Cookie cookie = new Cookie("user", login);
-            cookie.setMaxAge(24 * 60 * 60);
-            resp.addCookie(cookie);
-
-            resp.sendRedirect("main.jsp");
+            HttpSession session = req.getSession();
+            session.setAttribute("user", login);
+            resp.sendRedirect("main");
         } else {
             resp.sendRedirect("/login");
         }

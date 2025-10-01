@@ -12,7 +12,7 @@ public class SignUpServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        resp.sendRedirect("signup.html");
+        FreeMarkerUtil.render(resp, "signup.ftl", new HashMap<>());
     }
 
     @Override
@@ -20,18 +20,13 @@ public class SignUpServlet extends HttpServlet {
         String login = req.getParameter("login");
         String password = req.getParameter("password");
         users.put(login, password);
+
         HttpSession session = req.getSession();
         session.setAttribute("user", login);
-        session.setMaxInactiveInterval(60 * 60);
-
-        Cookie cookie = new Cookie("user", login);
-        cookie.setMaxAge(24 * 60 * 60);
-        resp.addCookie(cookie);
-
-        resp.sendRedirect("main.jsp");
+        resp.sendRedirect("main");
     }
+
     public static boolean checkUser(String login, String password) {
-        String storedPassword = users.get(login);
-        return storedPassword != null && storedPassword.equals(password);
+        return users.containsKey(login) && users.get(login).equals(password);
     }
 }
